@@ -8,7 +8,8 @@ import os
 import asyncio
 import logging
 from tornado_mysql import pools
-from tornado.platform.asyncio import AsyncIOMainLoop
+#不要在意混乱的import风格。
+
 
 define("port", default=8000, help="run on the given port", type=int)
 POOL = pools.Pool(
