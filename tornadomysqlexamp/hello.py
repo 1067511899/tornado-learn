@@ -8,13 +8,18 @@ import os
 import asyncio
 import logging
 from tornado_mysql import pools
+from tornado.platform.asyncio import AsyncIOMainLoop
 
 define("port", default=8000, help="run on the given port", type=int)
 POOL = pools.Pool(
     dict(host='127.0.0.1', port=3306, user='test', passwd='', db='mysql'),
-    max_idle_connections=10,max_open_connections=50,
+    max_idle_connections=10,max_open_connections=90,
     max_recycle_sec=3)
-#±ØĞëÌí¼Ó×î´ó´ò¿ªÁ¬½ÓÊı¡£·ñÔò»ámysql»á±¨1040£¬³¬³ö×î´óÁ¬½ÓÊı¡£
+#å¿…é¡»æ·»åŠ æœ€å¤§æ‰“å¼€è¿æ¥æ•°ã€‚å¦åˆ™ä¼šmysqlä¼šæŠ¥1040ï¼Œè¶…å‡ºæœ€å¤§è¿æ¥æ•°ã€‚
+#wrk -c 600ä¼šæŠ¥é”™ï¼šlinuxåº•ä¸‹æ²¡è¿™ä¸ªé—®é¢˜ã€‚
+# platform\select.py", line 63, in poll
+#     self.read_fds, self.write_fds, self.error_fds, timeout)
+# ValueError: too many file descriptors in select()
 
 class IndexHandler(tornado.web.RequestHandler):
     @gen.coroutine
@@ -29,9 +34,12 @@ if __name__ == "__main__":
 
     app = tornado.web.Application(handlers=[(r"/", IndexHandler)],
                 static_path=os.path.join(os.path.dirname(__file__), "static"), debug=False)
+
     print(os.path.join(os.path.dirname(__file__), "static"))
     http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(options.port)
+#     asyncio.set_event_loop_policy(asyncio.SelectorEventLoop)
+#è®¾ç½®ä»»ä½•eventloopéƒ½æŠ¥é”™ï¼Œè¢«windowsæå¾—æ²¡è„¾æ°”ã€‚
     print(asyncio.get_event_loop_policy())
     print(tornado.version)
     tornado.ioloop.IOLoop.instance().start()
