@@ -4,12 +4,10 @@ import tornado.options
 import tornado.web
 
 from tornado.options import define, options
-import os
 import asyncio
 import logging
 from tornado_mysql import pools
-import tornadoredis
-import time
+import redis
 
 # 不要在意混乱的import风格。
 
@@ -25,15 +23,17 @@ define("port", default=8000, help="run on the given port", type=int)
 class IndexHandler(tornado.web.RequestHandler):
     @gen.coroutine
     def get(self):
-        c = tornadoredis.Client(host='192.168.2.55')
-
-#         cur = yield POOL.execute("SELECT host from user")
-        t=str(time.time())
-        sqlstr="insert into normalinfo(title,detail) values ('"+t+"','"+t+"')"
-        cur=yield POOL.execute(sqlstr)
-        cur=yield POOL.execute("select last_insert_id()")
-#         c.
-        self.write(str(cur.fetchall()))
+#简单的应用，如果数据在redis里面，直接返回，否则查数据库。
+#redis的连接只有一个，还不是异步的，但是性能比查mysql快至少一倍吧。
+#异步redis太复杂，各种莫名其妙的错误，感觉没必要。
+        result=c.get('user')
+        if result:
+            self.write(result)
+        else:
+            cur = yield POOL.execute("SELECT host from user")
+            res=str(cur.fetchall())
+            c.set('user',res)
+            self.write(res)
 
 if __name__ == "__main__":
     tornado.options.parse_command_line()
@@ -49,9 +49,11 @@ if __name__ == "__main__":
 #   把POOL 的定义放在这里，是因为POOL本身就会初始化一个eventloop。
 
     POOL = pools.Pool(
-    dict(host='127.0.0.1', port=3306, user='test', passwd='', db='test'),
+    dict(host='127.0.0.1', port=3306, user='test', passwd='', db='mysql'),
     max_idle_connections=10, max_open_connections=90,
     max_recycle_sec=3)
+    c = redis.StrictRedis(host='192.168.2.55', port=6379, db=0)
+
     
 #     asyncio.set_event_loop_policy(asyncio.SelectorEventLoop)
 # 设置任何eventloop都报错，被windows搞得没脾气。
