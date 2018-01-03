@@ -31,44 +31,19 @@ RESPONSE1_BODY = b'''
 </html>'''
 
 
-CHUNKED_REQUEST1_1 = b'''POST /test.php?a=b+c HTTP/1.2
-User-Agent: Fooo
-Host: bar
-Transfer-Encoding: chunked
 
-5\r\nhello\r\n6\r\n world\r\n'''
+# - on_message_begin()
+# - on_header(name: bytes, value: bytes)
+# - on_headers_complete()
+# - on_body(body: bytes)
+# - on_message_complete()
+# - on_chunk_header()
+# - on_chunk_complete()
 
-CHUNKED_REQUEST1_2 = b'''0\r\nVary: *\r\nUser-Agent: spam\r\n\r\n'''
-
-CHUNKED_REQUEST1_3 = b'''POST /test.php?a=b+c HTTP/1.2
-User-Agent: Fooo
-Host: bar
-Transfer-Encoding: chunked
-
-b\r\n+\xce\xcfM\xb5MI,I\x04\x00\r\n0\r\n\r\n'''
-
-
-UPGRADE_REQUEST1 = b'''GET /demo HTTP/1.1
-Host: example.com
-Connection: Upgrade
-Sec-WebSocket-Key2: 12998 5 Y3 1  .P00
-Sec-WebSocket-Protocol: sample
-Upgrade: WebSocket
-Sec-WebSocket-Key1: 4 @1  46546xW%0l 1 5
-Origin: http://example.com
-
-Hot diggity dogg'''
-
-UPGRADE_RESPONSE1 = b'''HTTP/1.1 101 Switching Protocols
-UPGRADE: websocket
-SEC-WEBSOCKET-ACCEPT: rVg+XakFNFOxk3ZH0lzrZBmg0aU=
-TRANSFER-ENCODING: chunked
-CONNECTION: upgrade
-DATE: Sat, 07 May 2016 23:44:32 GMT
-SERVER: Python/3.4 aiohttp/1.0.3
-
-data'''.replace(b'\n', b'\r\n')
-
+#NI:not implemention
+#根据httptools初始化参数：def __init__(self, protocol):，需要传一个协议过去。
+#反正我知道的做法之一，就是写在协议的实现里面。然后调用各种on的回调函数。
+#如果要拿这个替换tornado本身的parser，基本上要重写http1connection.py了。
 
 class HttpProtocol(asyncio.Protocol):
     def __init__(self):
@@ -80,7 +55,7 @@ class HttpProtocol(asyncio.Protocol):
         
         if self.parser is None:
             self.headers = []
-            self.parser = httptools.HttpRequestParser(self)
+            self.parser = httptools.HttpResponseParser(self)
 
 
         try:
@@ -88,46 +63,37 @@ class HttpProtocol(asyncio.Protocol):
         except HttpParserError:
             message = 'Bad Request'
             print(message)
+            
+    def on_message_begin(self):
+        print('NI on_message_begin')
+        
+    
+    def on_header(self,name,value):
+        print(name,value)
+    
 
     def on_headers_complete(self):
-        print('NI')
+        print('NI on_headers_complete')
         
     
-#     def on_header(self, name, value):
-#         self._header_fragment += name
-#         print('NI1')
+    def on_body(self,body):
+        print(body)
 
-#         if value is not None:
-# #             if self._header_fragment == b'Content-Length' \
-# #                     and int(value) > self.request_max_size:
-# #                 exception = PayloadTooLarge('Payload Too Large')
-# #                 self.write_error(exception)
-#             try:
-#                 value = value.decode()
-#             except UnicodeDecodeError:
-#                 value = value.decode('latin_1')
-#             self.headers.append(
-#                     (self._header_fragment.decode().casefold(), value))
-# 
-#             self._header_fragment = b''
-        
-        
+    
+    def on_message_complete(self):
+        print('NI on_message_complete')
     
 
-class TestRequestParser():
-
-    def test_parser_request_chunked_1(self):
-        m = mock.Mock()
-
-        p = httptools.HttpRequestParser(m)
-
-        p.feed_data(UPGRADE_REQUEST1)
-
-        print(p.get_method())
+    def on_chunk_header(self):
+        print('NI on_chunk_header')
+        
+    
+    def on_chunk_complete(self):
+        print('NI on_chunk_complete')
  
 
 if __name__ == '__main__':
     t=HttpProtocol()
-    t.data_received(CHUNKED_REQUEST1_1)
+    t.data_received(RESPONSE1_HEAD+RESPONSE1_BODY)
     
     
