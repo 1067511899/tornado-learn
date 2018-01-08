@@ -1,0 +1,23 @@
+async def async_hello():
+print("hello, world!")
+Functions defined with the async keyword are special. When called, they do not
+execute the code inside but instead return a coroutine object:
+>>> async def async_hello():
+... print("hello, world!")
+...
+>>> async_hello()
+<coroutine object async_hello at 0x1014129e8>
+简单的说，async定义函数，创建的是一个协程对象，本身并不会执行。
+
+
+The coroutine object does not do anything until its execution is scheduled in the
+event loop. The asyncio module is available in order to provide the basic event
+loop implementation, as well as lot of other asynchronous utilities:
+>>> import asyncio
+>>> async def async_hello():
+... print("hello, world!")
+...
+>>> loop = asyncio.get_event_loop()
+>>> loop.run_until_complete(async_hello())
+hello, world!
+>>> loop.close()
