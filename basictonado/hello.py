@@ -4,12 +4,24 @@ import tornado.options
 import tornado.web   
 from tornado.options import define, options   
 import logging
+# import ujson
+
+
 define('port', default=8000, type=int)
 
 class IndexHandler(tornado.web.RequestHandler):   
     def get(self):   
-        greeting = self.get_argument('greeting', 'Hello')   
-        self.write(greeting + ', friendly user!')
+
+        quote = {'quote': (
+                "I've always been more interested in "
+                "the future than in the past."
+            ),
+            'author': 'Grace Hopper'
+        }
+
+
+        respon_json = tornado.escape.json_encode(quote)    
+        self.write(respon_json)    
 
 if __name__ == '__main__':   
     tornado.options.parse_command_line()   
