@@ -5,9 +5,9 @@ import tornado_mysql
 
 @gen.coroutine
 def main():
-    conn = yield tornado_mysql.connect(host='127.0.0.1', port=3306, user='root', passwd='wczsjrx', db='mysql')
+    conn = yield tornado_mysql.connect(host='192.168.1.155', port=3306,charset='utf8', user='root', passwd='1qazxsw2!@', db='wpnbmdb')
     cur = conn.cursor()
-    yield cur.execute("SELECT Host,User FROM user where user=\'root\'")
+    yield cur.execute("SELECT * from zs_yjsf")
     print(cur.description)
     for row in cur:
         print(row)
