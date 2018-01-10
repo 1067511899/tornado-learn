@@ -21,3 +21,27 @@ loop implementation, as well as lot of other asynchronous utilities:
 >>> loop.run_until_complete(async_hello())
 hello, world!
 >>> loop.close()
+
+
+关于mysql：
+1、如果出现诸如 mysql server gone away之类的，通常可以考虑连接数的问题。
+我设置如下：（16核16g内存的基于vmware云的虚拟机）
+
+max_connections = 4000
+open_files_limit=4000
+innodb_buffer_pool_instances=7
+innodb-buffer-pool-size =14G
+innodb_flush_method = O_DIRECT
+table_open_cache=8000
+
+需要配置服务器可以打开的最大文件数。否则，设置最大文件打开数或者连接数没有意义。
+需要修改/lib/systemd/system/mysql.service 否则改了系统的最大文件打开数限制也没用。
+
+Add the following lines to the bottom of the file:
+
+LimitNOFILE=infinity
+LimitMEMLOCK=infinity
+
+
+真心奇怪，限制的这么少，究竟是出于什么原因？
+
