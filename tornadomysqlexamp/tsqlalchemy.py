@@ -8,7 +8,10 @@ import tornado.web
 
 pools.DEBUG = True
 
-
+POOL = pools.Pool(
+    dict(host='192.168.1.155', port=3306, user='root', passwd='1qazxsw2!@', db='wpnbmdb', charset='utf8',),
+    max_idle_connections=10, max_open_connections=90,
+    max_recycle_sec=3)
 
 @gen.coroutine
 def main():
@@ -31,15 +34,15 @@ if __name__ == "__main__":
     app = tornado.web.Application(handlers=[(r"/", IndexHandler)], debug=False)
 
     http_server = tornado.httpserver.HTTPServer(app)
-#     http_server.listen(8888)
-    http_server.bind(80)
-    http_server.start(0)
+    http_server.listen(8888)
+#     http_server.bind(80)
+#     http_server.start(0)
 #   很遗憾，上述代码不能在windows下运行，所以，tornado的多进程只能在linux底下运行。
 #   把POOL 的定义放在这里，是因为POOL本身就会初始化一个eventloop。
-    POOL = pools.Pool(
-    dict(host='192.168.1.155', port=3306, user='root', passwd='1qazxsw2!@', db='wpnbmdb', charset='utf8',),
-    max_idle_connections=10, max_open_connections=90,
-    max_recycle_sec=3)
+#     POOL = pools.Pool(
+#     dict(host='192.168.1.155', port=3306, user='root', passwd='1qazxsw2!@', db='wpnbmdb', charset='utf8',),
+#     max_idle_connections=10, max_open_connections=90,
+#     max_recycle_sec=3)
 
 #     asyncio.set_event_loop_policy(asyncio.SelectorEventLoop)
 # 设置任何eventloop都报错，被windows搞得没脾气。
