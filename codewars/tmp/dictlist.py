@@ -22,3 +22,4 @@ if __name__ == '__main__':
     tmp = b[0]
     tmp = 'a'
     print(c)
+    print(sum({20, 10, -80, 10, 10, 15, 35}))
