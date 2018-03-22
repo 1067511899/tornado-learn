@@ -8,6 +8,10 @@ Write a class called PrimeFactorizer (inheriting directly from object) whose con
 PrimeFactorizer(24).factor #should return { 2: 3, 3: 1 }
 '''
 from collections import Counter
+from numba import jit
+
+
+@jit
 def is_prime(n):
     for i in range(2, int(n ** .5 + 1)):
         if n % i == 0:
@@ -16,13 +20,14 @@ def is_prime(n):
 
 
 class PrimeFactorizer:
+
     def __init__(self, n):
         self.n = n
         self.factor = []
         self.__ca__(self.n)
         self.factor = dict(Counter(self.factor))
     
-    
+    @jit
     def __ca__(self, n):
         i = 2
         tmp = int(n ** .5 + 1) + 1
@@ -39,6 +44,7 @@ class PrimeFactorizer:
         if not self.factor:
             self.factor = [self.n]
 
+
 # 好吧，啥时候我能写出这么优雅的代码？
 class PrimeFactorizer1:
 
@@ -50,6 +56,7 @@ class PrimeFactorizer1:
             while(num % i == 0):
                 num /= i
                 self.factor[i] = self.factor.get(i, 0) + 1
+
 
 if __name__ == '__main__':
     print(PrimeFactorizer(10967535067).factor)

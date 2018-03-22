@@ -53,10 +53,13 @@ Happy coding!!
 (To investigate beyond this kata: Do we have a convergence for the value of h, no matter the values of n and hMax are?)
 '''
 import time
+import numba as nb
+
 global p
 p = [2, 3, 5, 7, 11 , 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
 
 
+# @nb.autojit
 def genp(n):
     for np in range(101, n):
         isp = True
@@ -66,6 +69,7 @@ def genp(n):
                 break
         if isp:
             p.append(np)
+    return 1
 
 
 def give_max_h(n, kMax):
@@ -93,6 +97,7 @@ def give_max_h(n, kMax):
     return result1
 
 
+# @jit
 def sieve1(n):
     p = [True] * n
     for i in range(2, int(n ** .5) + 1):
@@ -127,14 +132,16 @@ def sieve(n):
 if __name__ == '__main__':
     beg = time.time()
     print(beg)
-#     genp(10000000)
+    genp(100000)
 #     print(len(p))
+#     genp(100000)
+
     mid = time.time()
     print(mid)
     fir = mid - beg
     print(mid - beg)
 #     print(len(sieve1(100000)))
-    sieve1(1000000000)
+    sieve1(100000)
 #     print(len(sieve(100000)))
 #     print(len(p))
 # #     print(p)

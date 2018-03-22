@@ -3,3 +3,4 @@
 .pydevproject
 tornadomysqlexamp/__init__.py
 tornadomysqlexamp/__pycache__/
+*.log
