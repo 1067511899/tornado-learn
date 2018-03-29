@@ -7,5 +7,6 @@ encoding//gunicorncode/gunicorn/config.py=utf-8
 encoding//gunicorncode/gunicorn/util.py=utf-8
 encoding//gunicorncode/gunicorn/workers/gtornado.py=utf-8
 encoding//gunicorncode/setup.py=utf-8
+encoding//others/forkos.py=utf-8
 encoding//tornadomysqlexamp/hello.py=UTF-8
 encoding/<project>=UTF-8
