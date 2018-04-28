@@ -149,7 +149,7 @@ Environments:
 def main():
     args = sys.argv[1:]
     if not args:
-#         args = 'http://pms.yhsoft.com'
+        args = 'https://asds.gtax.cn'
         print_help()
         quit(None, 0)
 
@@ -168,7 +168,7 @@ def main():
         log_level = logging.INFO
     logging.basicConfig(level=log_level)
     lg = logging.getLogger('httpstat')
-    fhand = logging.FileHandler('new2018032011.log', mode='a', encoding='GBK')
+    fhand = logging.FileHandler('new20180426.log', mode='a', encoding='GBK')
     lg.addHandler(fhand)
 
     # log envs

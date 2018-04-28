@@ -1,6 +1,5 @@
 import socketserver
-from multiprocessing import Process, Pool
-import time
+from concurrent.futures.thread import ThreadPoolExecutor
 
 
 class MyTCPHandler(socketserver.BaseRequestHandler):
@@ -14,7 +13,6 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         # self.request is the TCP socket connected to the client
-        print('tcp handler')
         self.data = self.request.recv(1024).strip()
         print("{} tcp handler wrote:".format(self.client_address[0]))
         print(self.data)
@@ -32,15 +30,15 @@ class MyUDPHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         data = self.request[0].strip()
-        print('udp handler')
         socket = self.request[1]
         print("{} udphandler wrote:".format(self.client_address[0]))
         print(data)
         socket.sendto(data.lower(), self.client_address)
         
         
-def tcp_task():
-    server = socketserver.TCPServer(('0.0.0.0', 8888), MyTCPHandler)
+def tcp_task(host, port):
+    print(host, port)
+    server = socketserver.TCPServer((host, port), MyTCPHandler)
     try:
         print('start tcp server')
         server.serve_forever()
@@ -48,8 +46,9 @@ def tcp_task():
         print(e)
 
 
-def udp_task():
-    server = socketserver.UDPServer(('0.0.0.0', 8888), MyUDPHandler)
+def udp_task(host, port):
+    print(host, port)
+    server = socketserver.UDPServer((host, port), MyUDPHandler)
     try:
         print('start udp server')
         server.serve_forever()
@@ -58,22 +57,10 @@ def udp_task():
 
 
 if __name__ == "__main__":
-    HOST, PORT = "localhost", 8888
+    HOST, PORT = "127.0.0.1", 8888
+    executor = ThreadPoolExecutor()
 
-    p1 = Process(target=tcp_task)
-    p1.start()
-# #     p1.join()
-#     print('main')
-#     p = Process(target=udp_task)
-#     p.start()
-#     p.join()
-#     p = Pool(4)
-#     for i in range(4):
-#         p.apply_async(httpd_task)
-#     p.close()
-#     p.join()
-    # Create the server, binding to localhost on port 9999
-    with socketserver.UDPServer((HOST, PORT), MyUDPHandler) as server:
-        print('start udp server')
-        server.serve_forever()
+    a = executor.submit(tcp_task, HOST, PORT)
+
+    b = executor.submit(udp_task, HOST, PORT)
 

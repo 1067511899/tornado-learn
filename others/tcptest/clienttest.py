@@ -1,7 +1,7 @@
 import socket
 import sys
 
-HOST, PORT = "192.168.1.157", 8888
+HOST, PORT = "localhost", 8888
 data = 'hello'
 
 # SOCK_DGRAM is the socket type to use for UDP sockets

@@ -8,5 +8,7 @@ encoding//gunicorncode/gunicorn/util.py=utf-8
 encoding//gunicorncode/gunicorn/workers/gtornado.py=utf-8
 encoding//gunicorncode/setup.py=utf-8
 encoding//others/forkos.py=utf-8
+encoding//others/webscraping2e/wiki/wikiSpider/items.py=utf-8
+encoding//others/webscraping2e/wiki/wikiSpider/settings.py=utf-8
 encoding//tornadomysqlexamp/hello.py=UTF-8
 encoding/<project>=UTF-8
