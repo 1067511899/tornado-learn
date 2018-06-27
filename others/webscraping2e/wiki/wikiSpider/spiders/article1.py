@@ -13,8 +13,8 @@ logging.basicConfig(level=logging.INFO,  # 控制台打印的日志级别
 
 class ArticleSpider(CrawlSpider):
     name = 'articles'
-    allowed_domains = ['wikipedia.org']
-    start_urls = ['https://en.wikipedia.org/wiki/Benevolent_dictator_for_life']
+    allowed_domains = ['to8to.com']
+    start_urls = ['http://sz.to8to.com/zwj/']
     rules = [Rule(LinkExtractor(allow=r'.*'), callback='parse_items', follow=True)]
 
     def parse_items(self, response):

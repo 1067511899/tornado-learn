@@ -1,4 +1,7 @@
 eclipse.preferences.version=1
+encoding//datascience/handsonmachine/dib.py=utf-8
+encoding//datascience/handsonmachine/ttnk.py=utf-8
+encoding//datascience/sqlservertest.py=utf-8
 encoding//gunicorncode/examples/multiapp.py=utf-8
 encoding//gunicorncode/gunicorn/app/base.py=utf-8
 encoding//gunicorncode/gunicorn/app/pasterapp.py=utf-8
